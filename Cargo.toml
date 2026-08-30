@@ -1,0 +1,33 @@
+[package]
+name = "as2expert"
+version = "0.1.0"
+edition = "2021"
+rust-version = "1.70"
+description = "Official Rust client for the AS2Expert REST API (send/receive AS2/EDI, partners, certificates, stations, EDIFACT)."
+license = "Apache-2.0"
+repository = "https://github.com/as2expert/as2expert-rust"
+homepage = "https://github.com/as2expert/as2expert-rust"
+keywords = ["as2", "edi", "edifact", "b2b", "as2expert"]
+categories = ["api-bindings", "network-programming"]
+readme = "README.md"
+
+[features]
+default = ["rustls"]
+# Blocking client wrapper (spawns a private Tokio runtime).
+blocking = ["tokio/rt", "tokio/rt-multi-thread"]
+rustls = ["reqwest/rustls-tls"]
+native-tls = ["reqwest/native-tls"]
+
+[dependencies]
+reqwest = { version = "0.12", default-features = false, features = ["json"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+base64 = "0.22"
+hmac = "0.12"
+sha2 = "0.10"
+hex = "0.4"
+# `time` for retry backoff; the async client always runs under a Tokio runtime.
+tokio = { version = "1", features = ["time"] }
+
+[dev-dependencies]
+tokio = { version = "1", features = ["macros", "rt", "rt-multi-thread"] }
