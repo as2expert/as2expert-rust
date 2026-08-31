@@ -58,11 +58,7 @@ impl Transport {
         let url = format!("{}/{}", self.base_url, path.trim_start_matches('/'));
         let mut attempt: u32 = 0;
         loop {
-            let mut req = self
-                .http
-                .post(&url)
-                .bearer_auth(&self.token)
-                .json(&body);
+            let mut req = self.http.post(&url).bearer_auth(&self.token).json(&body);
             for (k, v) in extra {
                 req = req.header(*k, v);
             }
@@ -80,7 +76,11 @@ impl Transport {
                         backoff(attempt).await;
                         continue;
                     }
-                    return Err(Error::from_status(status, message_of(&payload, &text), payload));
+                    return Err(Error::from_status(
+                        status,
+                        message_of(&payload, &text),
+                        payload,
+                    ));
                 }
                 Err(e) => {
                     if attempt < self.max_retries && (e.is_timeout() || e.is_connect()) {
@@ -107,7 +107,11 @@ fn message_of(payload: &Option<Value>, fallback: &str) -> String {
     payload
         .as_ref()
         .and_then(|v| v.as_object())
-        .and_then(|o| o.get("msg").or_else(|| o.get("message")).or_else(|| o.get("error")))
+        .and_then(|o| {
+            o.get("msg")
+                .or_else(|| o.get("message"))
+                .or_else(|| o.get("error"))
+        })
         .and_then(|v| v.as_str())
         .map(String::from)
         .filter(|s| !s.is_empty())

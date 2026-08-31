@@ -107,7 +107,11 @@ impl BlockingClient {
         file_name: impl Into<String>,
         content: &[u8],
     ) -> Result<Value> {
-        self.block(self.inner.messages.send(partner, subject, file_name, content))
+        self.block(
+            self.inner
+                .messages
+                .send(partner, subject, file_name, content),
+        )
     }
 
     // --- Partners / Certificates / Stations ---

@@ -13,7 +13,8 @@ const MAX_SKEW_SECS: i64 = 300;
 
 /// Compute the `sha256=<hex>` signature for a `timestamp` + `body`.
 pub fn sign_payload(secret: &str, timestamp: &str, body: &str) -> String {
-    let mut mac = HmacSha256::new_from_slice(secret.as_bytes()).expect("HMAC accepts any key length");
+    let mut mac =
+        HmacSha256::new_from_slice(secret.as_bytes()).expect("HMAC accepts any key length");
     mac.update(format!("{timestamp}.{body}").as_bytes());
     format!("sha256={}", hex::encode(mac.finalize().into_bytes()))
 }

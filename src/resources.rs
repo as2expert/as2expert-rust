@@ -58,12 +58,17 @@ impl Messages {
     }
 
     pub async fn get(&self, id: impl Into<Value>) -> Result<Value> {
-        self.t.post("/messages/detail", json!({ "id": id.into() })).await
+        self.t
+            .post("/messages/detail", json!({ "id": id.into() }))
+            .await
     }
 
     /// Download the message payload, returning the raw decoded bytes.
     pub async fn download(&self, id: impl Into<Value>) -> Result<Vec<u8>> {
-        let data = self.t.post("/messages/download", json!({ "id": id.into() })).await?;
+        let data = self
+            .t
+            .post("/messages/download", json!({ "id": id.into() }))
+            .await?;
         decode_b64_field(&data)
     }
 
@@ -90,21 +95,30 @@ impl Messages {
     }
 
     pub async fn mark_read(&self, id: impl Into<Value>) -> Result<Value> {
-        self.t.post("/messages/mark-read", json!({ "id": id.into() })).await
+        self.t
+            .post("/messages/mark-read", json!({ "id": id.into() }))
+            .await
     }
 
     pub async fn mark_unread(&self, id: impl Into<Value>) -> Result<Value> {
-        self.t.post("/messages/mark-unread", json!({ "id": id.into() })).await
+        self.t
+            .post("/messages/mark-unread", json!({ "id": id.into() }))
+            .await
     }
 
     pub async fn move_to(&self, id: impl Into<Value>, folder: impl Into<Value>) -> Result<Value> {
         self.t
-            .post("/messages/move", json!({ "id": id.into(), "folder": folder.into() }))
+            .post(
+                "/messages/move",
+                json!({ "id": id.into(), "folder": folder.into() }),
+            )
             .await
     }
 
     pub async fn delete(&self, id: impl Into<Value>) -> Result<Value> {
-        self.t.post("/messages/delete", json!({ "id": id.into() })).await
+        self.t
+            .post("/messages/delete", json!({ "id": id.into() }))
+            .await
     }
 
     /// Incremental changes; `params` is merged into the request body.
@@ -113,7 +127,9 @@ impl Messages {
     }
 
     pub async fn files(&self, id: impl Into<Value>) -> Result<Value> {
-        self.t.post("/messages/files", json!({ "id": id.into() })).await
+        self.t
+            .post("/messages/files", json!({ "id": id.into() }))
+            .await
     }
 
     pub async fn file_download(
@@ -123,7 +139,10 @@ impl Messages {
     ) -> Result<Vec<u8>> {
         let data = self
             .t
-            .post("/messages/file-download", json!({ "id": id.into(), "file_id": file_id.into() }))
+            .post(
+                "/messages/file-download",
+                json!({ "id": id.into(), "file_id": file_id.into() }),
+            )
             .await?;
         decode_b64_field(&data)
     }
@@ -138,7 +157,9 @@ impl Partners {
         Ok(as_array(self.t.post("/partners", filter).await?))
     }
     pub async fn get(&self, id: impl Into<Value>) -> Result<Value> {
-        self.t.post("/partners/detail", json!({ "id": id.into() })).await
+        self.t
+            .post("/partners/detail", json!({ "id": id.into() }))
+            .await
     }
     pub async fn create(&self, partner: Value) -> Result<Value> {
         self.t.post("/partners/create", partner).await
@@ -150,7 +171,9 @@ impl Certificates {
         Ok(as_array(self.t.post("/certificates", json!({})).await?))
     }
     pub async fn get(&self, id: impl Into<Value>) -> Result<Value> {
-        self.t.post("/certificates/detail", json!({ "id": id.into() })).await
+        self.t
+            .post("/certificates/detail", json!({ "id": id.into() }))
+            .await
     }
     pub async fn create(&self, cert: Value) -> Result<Value> {
         self.t.post("/certificates/create", cert).await
@@ -162,10 +185,14 @@ impl Stations {
         Ok(as_array(self.t.post("/stations", filter).await?))
     }
     pub async fn get(&self, id: impl Into<Value>) -> Result<Value> {
-        self.t.post("/stations/detail", json!({ "id": id.into() })).await
+        self.t
+            .post("/stations/detail", json!({ "id": id.into() }))
+            .await
     }
     pub async fn stats(&self, id: impl Into<Value>) -> Result<Value> {
-        self.t.post("/stations/stats", json!({ "id": id.into() })).await
+        self.t
+            .post("/stations/stats", json!({ "id": id.into() }))
+            .await
     }
     pub async fn create(&self, station: Value) -> Result<Value> {
         self.t.post("/stations/create", station).await
@@ -193,7 +220,9 @@ impl BusinessDocuments {
         let extra = idempotency_key
             .map(|k| vec![("Idempotency-Key", k.to_string())])
             .unwrap_or_default();
-        self.t.post_with_headers("/business-documents", doc, &extra).await
+        self.t
+            .post_with_headers("/business-documents", doc, &extra)
+            .await
     }
     pub async fn get(&self, business_document_id: impl Into<Value>) -> Result<Value> {
         self.t
@@ -211,7 +240,9 @@ impl BusinessDocuments {
 impl Edifact {
     /// Parse + validate an interchange (structure, codes, required elements).
     pub async fn analyze(&self, edifact: impl Into<String>) -> Result<Value> {
-        self.t.post("/edifact/analyze", json!({ "edifact": edifact.into() })).await
+        self.t
+            .post("/edifact/analyze", json!({ "edifact": edifact.into() }))
+            .await
     }
     /// Alias of [`analyze`](Self::analyze) — the same endpoint.
     pub async fn validate(&self, edifact: impl Into<String>) -> Result<Value> {
@@ -228,7 +259,8 @@ impl Edifact {
     }
     /// Build a functional acknowledgement (`kind`: `"contrl"` or `"aperak"`).
     pub async fn acknowledge(&self, edifact: impl Into<String>) -> Result<Value> {
-        self.acknowledge_with(edifact, "contrl", true, Value::Array(vec![])).await
+        self.acknowledge_with(edifact, "contrl", true, Value::Array(vec![]))
+            .await
     }
     /// Acknowledge with explicit kind / acknowledged flag / error list.
     pub async fn acknowledge_with(

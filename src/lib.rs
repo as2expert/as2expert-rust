@@ -30,6 +30,11 @@
 //! Every method maps to a single POST call (the API is POST-only) and returns a
 //! [`serde_json::Value`]; list methods return `Vec<Value>`.
 
+// `Error` deliberately carries rich diagnostics (the parsed payload, validation
+// fields, retry hints). Boxing every `Result` to shave bytes off a rare,
+// I/O-bound error path is not worth the ergonomic cost here.
+#![allow(clippy::result_large_err)]
+
 mod client;
 mod error;
 mod http;
