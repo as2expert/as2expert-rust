@@ -57,6 +57,13 @@ impl Messages {
         Ok(as_array(self.t.post("/messages", filter).await?))
     }
 
+    /// List a station's folders. `filter` may carry `station`; omit it for every
+    /// folder on the site. Each folder has `id`, `name`, `parent_id`, `count`,
+    /// `icono`, `especial`, and `station_id`/`station_name`.
+    pub async fn folders(&self, filter: Value) -> Result<Vec<Value>> {
+        Ok(as_array(self.t.post("/messages/folders", filter).await?))
+    }
+
     pub async fn get(&self, id: impl Into<Value>) -> Result<Value> {
         self.t
             .post("/messages/detail", json!({ "id": id.into() }))
