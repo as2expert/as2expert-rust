@@ -171,6 +171,15 @@ impl Partners {
     pub async fn create(&self, partner: Value) -> Result<Value> {
         self.t.post("/partners/create", partner).await
     }
+    /// Update a partner's identity fields. `partner` must carry `id`.
+    pub async fn update(&self, partner: Value) -> Result<Value> {
+        self.t.post("/partners/update", partner).await
+    }
+    pub async fn delete(&self, id: impl Into<Value>) -> Result<Value> {
+        self.t
+            .post("/partners/delete", json!({ "id": id.into() }))
+            .await
+    }
 }
 
 impl Certificates {
@@ -203,6 +212,15 @@ impl Stations {
     }
     pub async fn create(&self, station: Value) -> Result<Value> {
         self.t.post("/stations/create", station).await
+    }
+    /// Update a station's identity fields. `station` must carry `id`.
+    pub async fn update(&self, station: Value) -> Result<Value> {
+        self.t.post("/stations/update", station).await
+    }
+    pub async fn delete(&self, id: impl Into<Value>) -> Result<Value> {
+        self.t
+            .post("/stations/delete", json!({ "id": id.into() }))
+            .await
     }
 }
 
